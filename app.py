@@ -41,10 +41,10 @@ def api():
     print(f"GET request received with tamanho={tamanho}, forma={forma}, escala={escala}")
     if None in [tamanho, forma, escala]:
         return jsonify({"erro": "Parâmetros em falta ou não numéricos"}), 400
-    if (tamanho<=0 or forma<=0 or escala<=0 or numero<=0):
+    if (tamanho<=0 or forma<=0 or escala<=0):
         print("Corrija valores não positivos");
         return jsonify({"erro": "Corrija valores não positivos"}), 400
-    if None in [numero]:
+    if (None in [numero] or numero<=0):
         result = generate_weibull_random_numbers(forma, escala, tamanho)
         return resultados(result)
     x = 0
