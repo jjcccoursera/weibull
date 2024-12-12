@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+    @media (min-width: 768px) {
+      body {
+        max-width: 414px;
+        margin: 0 auto;
+      }
+    }
+    body {
+        background-color: rgba(161, 196, 133, 0.2)
+    }
+  </style>
+  <title>Amostras Weibull</title>
+</head>
+<body style="font-family:arial">
+  <table id="Cab" style="width: 100%; font-family: arial">
+    <tr style="color: white; background-color: green; border: 3px solid green;
+            background-image: url('/static/images/fundo.jpg'); font-size: 30px">
+        <td width="100%" style="padding: 20px">
+            <div style="color:white; text-align: center">
+                <b> Amostras Weibull </b>
+            </div>
+        </td>
+    </tr>
+  </table>
+  <p>  </p>
+
+  <div style="color: green"><p></p>
+  Para gerar amostras de populações Weibull...<br />
+  <p></p>
+  (API disponível.<br />
+  Exemplos:<br /><br />
+  para gerar uma amostra:<br />
+  http://.../api?tamanho=100&forma=1.5&escala=2.0<br /><br />
+  para gerar estatísticas baseadas em 1000 amostras:<br />
+  http://.../api?tamanho=1000&forma=1.5&escala=2.0&numero=1000<br />
+  )
+  <p></p>
+  </div>
+
+  <p>  </p>
+  <label for="tamanho">Tamanho da amostra:</label>
+  <input type="text" id="tamanho" placeholder="Especifique tamanho">
+  <p>  </p>
+  <label for="forma">Forma:</label>
+  <input type="text" id="forma" placeholder="Especifique forma">
+  <p>  </p>
+  <label for="escala">Escala:</label>
+  <input type="text" id="escala" placeholder="Especifique escala">
+
+  <p>  </p>
+  <button onclick="gerarAmostraEmPython()" 
+            style="color: white; background-color: green; 
+            border: 0px; border-radius: 10px; font-size: 15px">
+    Gerar amostra
+  </button>
+  <p id="result"></p>
+
+  <table style="margin: 10px auto">
+      <thead>
+          <tr style="color: green">
+              <th id="titulo" style="text-align:center"; display="none"><u> Amostra       </u></th>
+          </tr>
+      </thead>
+      <tbody id="amostra" style="text-align:right;"></tbody>
+  </table>
+
+    <script>
+
+        document.querySelector("#tamanho").addEventListener("input", limpa);
+        document.querySelector("#forma").addEventListener("input", limpa);
+        document.querySelector("#escala").addEventListener("input", limpa);
+        limpa();
+
+        function limpa () {
+            document.getElementById('titulo').style.display = "none";
+            const tbody = document.getElementById('amostra');
+            tbody.innerHTML = ""; // Clear any existing rows
+        };
+
+        async function gerarAmostraEmPython() {
+            document.getElementById('titulo').style.display = "block";
+            const tbody = document.getElementById('amostra');
+            tbody.innerHTML = ""; // Clear any existing rows
+            
+            const url = "https://weibull-443411.ew.r.appspot.com/invoke"; // for deployment
+            // const url = "http://localhost:8000/invoke"; // for local development
+            const tamanho = parseInt(document.getElementById('tamanho').value);
+            const forma = parseFloat(document.getElementById('forma').value.replace(",", "."));
+            const escala = parseFloat(document.getElementById('escala').value.replace(",", "."));
+            // Create JSON object
+            var jsonObject = { "tamanho": tamanho, "forma": forma, "escala": escala };
+            console.log("Sending data:", jsonObject); // Debug log
+            if (tamanho<=0 || forma<=0 || escala<=0) {
+                alert("Corrija valores não positivos");
+                throw new Error('Erro, valores de parâmetros não positivos.');
+            }
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(jsonObject)
+                });
+
+                if (!response.ok) {
+                    alert("Parâmetros em falta ou não numéricos");
+                    throw new Error('Parâmetros em falta ou não numéricos');
+                }
+
+                const amostra = await response.json();
+                console.log("Received response:", amostra);  // Debug log
+
+                // Populate the table with the result
+                const tbody = document.getElementById('amostra');
+                tbody.innerHTML = ""; // Clear any existing rows
+                var row = document.createElement('tr');
+                var cell = document.createElement('td');
+                cell.style = "color: green";
+                cell.innerText = "Média: " + amostra.média.toFixed(3);
+                tbody.appendChild(row);
+                row.appendChild(cell);
+                row = document.createElement('tr');
+                cell = document.createElement('td');
+                cell.style = "color: green";
+                cell.innerText = "DP: " + amostra.dp.toFixed(3);
+                tbody.appendChild(row);
+                row.appendChild(cell);
+                amostra.lista.forEach((value, index) => {
+                    const row = document.createElement('tr');
+                    const cell = document.createElement('td');
+                    cell.innerText = value.toFixed(3);
+                    row.appendChild(cell);
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+
+        function error(err) {
+            console.warn(`ERROR(${err.code}): ${err.message}`);
+        }
+
+
+  </script>
+</body>
+</html>
