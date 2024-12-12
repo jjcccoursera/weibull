@@ -87,14 +87,9 @@
             let tbody = document.getElementById('amostra');
             tbody.innerHTML = ""; // Clear any existing rows
             
-            // const url = "https://weibull-443411.ew.r.appspot.com/invoke"; // for deployment
-            // const url = "http://localhost:8000/invoke"; // for local development
             const tamanho = parseInt(document.getElementById('tamanho').value);
             const forma = parseFloat(document.getElementById('forma').value.replace(",", "."));
             const escala = parseFloat(document.getElementById('escala').value.replace(",", "."));
-            // Create JSON object
-            // var jsonObject = { "tamanho": tamanho, "forma": forma, "escala": escala };
-            // console.log("Sending data:", jsonObject); // Debug log
             if (tamanho<=0 || forma<=0 || escala<=0) {
                 alert("Corrija valores não positivos");
                 throw new Error('Erro, valores de parâmetros não positivos.');
