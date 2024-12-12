@@ -1,5 +1,0 @@
-Flask==3.0.0
-Werkzeug==3.0.0
-numpy
-gunicorn==20.1.0
-flask_cors
