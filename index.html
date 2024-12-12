@@ -82,70 +82,75 @@
             tbody.innerHTML = ""; // Clear any existing rows
         };
 
-        async function gerarAmostraEmPython() {
+        function gerarAmostraEmPython() {
             document.getElementById('titulo').style.display = "block";
             const tbody = document.getElementById('amostra');
             tbody.innerHTML = ""; // Clear any existing rows
             
-            const url = "https://weibull-443411.ew.r.appspot.com/invoke"; // for deployment
+            // const url = "https://weibull-443411.ew.r.appspot.com/invoke"; // for deployment
             // const url = "http://localhost:8000/invoke"; // for local development
             const tamanho = parseInt(document.getElementById('tamanho').value);
             const forma = parseFloat(document.getElementById('forma').value.replace(",", "."));
             const escala = parseFloat(document.getElementById('escala').value.replace(",", "."));
             // Create JSON object
-            var jsonObject = { "tamanho": tamanho, "forma": forma, "escala": escala };
-            console.log("Sending data:", jsonObject); // Debug log
+            // var jsonObject = { "tamanho": tamanho, "forma": forma, "escala": escala };
+            // console.log("Sending data:", jsonObject); // Debug log
             if (tamanho<=0 || forma<=0 || escala<=0) {
                 alert("Corrija valores não positivos");
                 throw new Error('Erro, valores de parâmetros não positivos.');
             }
 
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(jsonObject)
-                });
+            const amostra = weibull(forma, escala, tamanho); 
+            console.log(" Amostra:", amostra);  // Debug log
 
-                if (!response.ok) {
-                    alert("Parâmetros em falta ou não numéricos");
-                    throw new Error('Parâmetros em falta ou não numéricos');
-                }
-
-                const amostra = await response.json();
-                console.log("Received response:", amostra);  // Debug log
-
-                // Populate the table with the result
-                const tbody = document.getElementById('amostra');
-                tbody.innerHTML = ""; // Clear any existing rows
-                var row = document.createElement('tr');
-                var cell = document.createElement('td');
-                cell.style = "color: green";
-                cell.innerText = "Média: " + amostra.média.toFixed(3);
-                tbody.appendChild(row);
+            // Populate the table with the result
+            const tbody = document.getElementById('amostra');
+            tbody.innerHTML = ""; // Clear any existing rows
+            var row = document.createElement('tr');
+            var cell = document.createElement('td');
+            cell.style = "color: green";
+            cell.innerText = "Média: " + amostra.média.toFixed(3);
+            tbody.appendChild(row);
+            row.appendChild(cell);
+            row = document.createElement('tr');
+            cell = document.createElement('td');
+            cell.style = "color: green";
+            cell.innerText = "DP: " + amostra.dp.toFixed(3);
+            tbody.appendChild(row);
+            row.appendChild(cell);
+            amostra.lista.forEach((value, index) => {
+                const row = document.createElement('tr');
+                const cell = document.createElement('td');
+                cell.innerText = value.toFixed(3);
                 row.appendChild(cell);
-                row = document.createElement('tr');
-                cell = document.createElement('td');
-                cell.style = "color: green";
-                cell.innerText = "DP: " + amostra.dp.toFixed(3);
                 tbody.appendChild(row);
-                row.appendChild(cell);
-                amostra.lista.forEach((value, index) => {
-                    const row = document.createElement('tr');
-                    const cell = document.createElement('td');
-                    cell.innerText = value.toFixed(3);
-                    row.appendChild(cell);
-                    tbody.appendChild(row);
-                });
-            } catch (error) {
-                console.error(error);
-            }
+            });
         }
 
+        /* function invoke(tamanho, forma, escala) { 
+             console.log("Received parameters:", { tamanho, forma, escala }); // Debug log 
+             if ([tamanho, forma, escala].some(param => param === undefined)) { 
+                 console.log("Missing or non-numeric parameters"); 
+                 alert("Missing or non-numeric parameters"); return; } 
+             if ([tamanho, forma, escala].some(param => param <= 0)) { 
+                 console.log("Please correct non-positive values"); 
+                 alert("Please correct non-positive values"); 
+                 return; 
+             } 
+             console.log(`tamanho: ${tamanho}, forma: ${forma}, escala: ${escala}`);
+             const result = weibull (forma, escala, tamanho); 
+             console.log(resultados(result)); 
+         } */
 
-        function error(err) {
-            console.warn(`ERROR(${err.code}): ${err.message}`);
-        }
+        function weibull(shape, scale, size) { 
+            let values = []; 
+            for (let i = 0; i < size; i++) { 
+                let u = Math.random(); // Uniform random number between 0 and 1 
+                let w = scale * Math.pow(-Math.log(1 - u), 1 / shape); 
+                values.push(w); 
+            } 
+            return values; 
+        } 
 
 
   </script>
