@@ -53,7 +53,7 @@
   <input type="text" id="escala" placeholder="Especifique escala">
 
   <p>  </p>
-  <button onclick="gerarAmostraEmPython()" 
+  <button onclick="gerarAmostra()" 
             style="color: white; background-color: green; 
             border: 0px; border-radius: 10px; font-size: 15px">
     Gerar amostra
@@ -152,8 +152,7 @@
             return values; 
         }
 
-        gerarAmostra();
-
+        
         /* function resultados(result) { 
             const sum = result.reduce((a, b) => a + b, 0); 
             const média = sum / result.length; 
