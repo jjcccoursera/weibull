@@ -84,7 +84,7 @@
     const tamanho = parseInt((location.search.split('tamanho=')[1]||'').split('&')[0].replace(",","."));
     const numero = parseInt((location.search.split('numero=')[1]||'').split('&')[0].replace(",","."));
     
-    invoke(tamanho, forma, escala, numero);
+    document.getElementById("resultados").innerText = invoke(tamanho, forma, escala, numero);
 
     
   </script>
