@@ -50,7 +50,7 @@
       } 
       if (numero === undefined || numero <= 0) { 
         const result = weibull(forma, escala, tamanho); 
-        return resultados(result); 
+        return JSON.stringify(resultados(result)); 
       } 
       
       const medias = []; 
