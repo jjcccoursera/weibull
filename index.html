@@ -102,7 +102,7 @@
 
             const amostra = weibull(forma, escala, tamanho); 
             console.log(" Amostra:", amostra);  // Debug log
-            console.log(amostra['média']);
+            console.log(Object.values(amostra));
 
             // Populate the table with the result
             tbody = document.getElementById('amostra');
