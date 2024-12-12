@@ -101,9 +101,7 @@
             }
 
             const amostra = weibull(forma, escala, tamanho); 
-            console.log(" Amostra:", amostra);  // Debug log
-            console.log(Object.values(amostra));
-
+            
             // Populate the table with the result
             tbody = document.getElementById('amostra');
             tbody.innerHTML = ""; // Clear any existing rows
@@ -128,20 +126,6 @@
             });
         }
 
-        /* function invoke(tamanho, forma, escala) { 
-             console.log("Received parameters:", { tamanho, forma, escala }); // Debug log 
-             if ([tamanho, forma, escala].some(param => param === undefined)) { 
-                 console.log("Missing or non-numeric parameters"); 
-                 alert("Missing or non-numeric parameters"); return; } 
-             if ([tamanho, forma, escala].some(param => param <= 0)) { 
-                 console.log("Please correct non-positive values"); 
-                 alert("Please correct non-positive values"); 
-                 return; 
-             } 
-             console.log(`tamanho: ${tamanho}, forma: ${forma}, escala: ${escala}`);
-             const result = weibull (forma, escala, tamanho); 
-             console.log(resultados(result)); 
-         } */
 
         function weibull(shape, scale, size) { 
             let values = []; 
