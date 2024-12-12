@@ -152,7 +152,15 @@
             return values; 
         } 
 
-
+        /* function resultados(result) { 
+            const sum = result.reduce((a, b) => a + b, 0); 
+            const média = sum / result.length; 
+            const variance = result.reduce((a, b) => a + Math.pow(b - média, 2), 0) / result.length; 
+            const dp = Math.sqrt(variance); 
+            const json_object = { "média": média, "dp": dp, "lista": result };
+            console.log(json_object); 
+            return JSON.stringify(json_object); 
+         */
   </script>
 </body>
 </html>
