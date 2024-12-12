@@ -9,6 +9,16 @@
 
   <script>
 
+    function weibull(shape, scale, size) { 
+      let values = []; 
+      for (let i = 0; i < size; i++) { 
+          let u = Math.random(); // Uniform random number between 0 and 1 
+          let w = scale * Math.pow(-Math.log(1 - u), 1 / shape); 
+          values.push(w); 
+      } 
+      return values; 
+    } 
+    
     function calculateStatistics(arr) { 
       const sum = arr.reduce((a, b) => a + b, 0); 
       const mean = sum / arr.length; 
