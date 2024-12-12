@@ -84,6 +84,7 @@
     const escala = parseFloat((location.search.split('escala=')[1]||'').split('&')[0].replace(",","."));
     const tamanho = parseInt((location.search.split('tamanho=')[1]||'').split('&')[0].replace(",","."));
     const numero = parseInt((location.search.split('numero=')[1]||'').split('&')[0].replace(",","."));
+    console.log(numero);
     
     document.getElementById("resultados").innerText = invoke(tamanho, forma, escala, numero);
 
