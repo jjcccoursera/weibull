@@ -9,91 +9,72 @@
 
   <script>
 
-    async function fetchAircraftData(lat, long, alt) {
-      const url = "https://opensky-network.org/api/states/all?lamin="+(lat-0.5)+"&lomin="+(long-0.5)+"&lamax="+(lat+0.5)+"&lomax="+(long+0.5);
-      r = document.getElementById('resultados');
-      var resultados = [];
-
-      try {
-        const response = await fetch(url);
-
-        if (!response.ok) {
-            r.innerText = JSON.stringify({
-              "error": 'Network response was not ok'});
-            return;
-        }
-
-        const data = await response.json();
-        console.log(data.states);
-        if (data.states == null) {
-            r.innerText = JSON.stringify({
-              "message": 'No aircraft nearby'});
-            return;
-        } else {
-          data.states.forEach(state => {
-            const distance = calculate3DDistance(lat, long, alt, state[6], state[5], state[13]);
-            console.log(distance);
-            let altit = "n.a.";
-            if (state[13] !== null) {
-              altit = state[13];
-            }
-            let rate = "n.a.";
-            if (state[11] !== null) {
-              rate = state[11].toFixed(1);
-            }
-            resultados.push([state[1], state[2], distance, altit, rate]);
-          });
-        }
-        console.log(resultados);
-        jsonObject = {
-          "timestamp": Date(data.time*1000),
-          "latlongalt": [lat, long, alt],  
-          "header": ["Callsign", "Country", "Distance", "Altitude", "Climbing"],
-          "aircraft": resultados,
-          "urlsource": "https://opensky-network.org/api/",
-          "source": "See Matthias Schäfer, Martin Strohmeier, Vincent Lenders, Ivan Martinovic and Matthias Wilhelm. Bringing Up OpenSky: A Large-scale ADS-B Sensor Network for Research. In Proceedings of the 13th IEEE/ACM International Symposium on Information Processing in Sensor Networks (IPSN), pages 83-94, April 2014."
-        }
-        console.log(JSON.stringify(jsonObject));
-        document.getElementById('resultados').innerText = JSON.stringify(jsonObject);
-        return;
-      } catch (error) {
-        r.innerText = JSON.stringify({
-              "error": 'Error fetching data:' & error.message});
-        return;
-      }
+    function calculateStatistics(arr) { 
+      const sum = arr.reduce((a, b) => a + b, 0); 
+      const mean = sum / arr.length; 
+      const variance = arr.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / arr.length; 
+      const stdDev = Math.sqrt(variance); 
+      const min = Math.min(...arr); 
+      const max = Math.max(...arr); 
+      return { mean, stdDev, min, max }; 
+    } 
+    
+    function resultados(result) { 
+      const { mean, stdDev } = calculateStatistics(result); 
+      const json_object = { 
+        "média": mean, 
+        "dp": stdDev, 
+        "lista": result 
+      }; 
+      console.log(json_object); 
+      return JSON.stringify(json_object); 
+    } 
+    
+    function invoke(tamanho, forma, escala, numero) { 
+      console.log("Received parameters:", { tamanho, forma, escala, numero }); 
+      if ([tamanho, forma, escala].some(param => param === undefined) || [tamanho, forma, escala].some(param => param <= 0)) {
+        console.log("Corrija valores não positivos ou parâmetros em falta"); 
+        alert("Corrija valores não positivos ou parâmetros em falta"); 
+        return; 
+      } 
+      if (numero === undefined || numero <= 0) { 
+        const result = weibull(forma, escala, tamanho); 
+        return resultados(result); 
+      } 
+      
+      const medias = []; 
+      const dps = []; 
+      const maxs = []; 
+      const mins = []; 
+      for (let x = 0; x < numero; x++) { 
+        const result = weibull(forma, escala, tamanho); 
+        const stats = calculateStatistics(result); 
+        medias.push(stats.mean); 
+        dps.push(stats.stdDev); 
+        maxs.push(stats.max); 
+        mins.push(stats.min); 
+      } 
+      const json_object = { 
+        "0. cabeçalhos,": "médias, desvios padrão, mínimos, máximos", 
+        "1. média das,": `${medias.reduce((a, b) => a + b, 0) / medias.length}, ${dps.reduce((a, b) => a + b, 0) / dps.length}, ${mins.reduce((a, b) => a + b, 0) / mins.length}, ${maxs.reduce((a, b) => a + b, 0) / maxs.length}`, 
+        "2. desvio padrão das,": `${Math.sqrt(medias.reduce((a, b) => a + Math.pow(b - (medias.reduce((a, b) => a + b, 0) / medias.length), 2), 0) / medias.length)}, ${Math.sqrt(dps.reduce((a, b) => a + Math.pow(b - (dps.reduce((a, b) => a + b, 0) / dps.length), 2), 0) / dps.length)}, ${Math.sqrt(mins.reduce((a, b) => a + Math.pow(b - (mins.reduce((a, b) => a + b, 0) / mins.length), 2), 0) / mins.length)}, ${Math.sqrt(maxs.reduce((a, b) => a + Math.pow(b - (maxs.reduce((a, b) => a + b, 0) / maxs.length), 2), 0) / maxs.length)}`, 
+        "3. mínimo das,": `${Math.min(...medias)}, ${Math.min(...dps)}, ${Math.min(...mins)}, ${Math.min(...maxs)}`, 
+        "4. máximo das,": `${Math.max(...medias)}, ${Math.max(...dps)}, ${Math.max(...mins)}, ${Math.max(...maxs)}`, 
+        "5. médias": medias, 
+        "6. desvios padrão": dps, 
+        "7. mínimos": mins, 
+        "8. máximos": maxs 
+      }; 
+      console.log(json_object); 
+      return JSON.stringify(json_object); 
     }
-
-    function calculate3DDistance(lat1, lon1, alt1, lat2, lon2, alt2) {
-      const R = 6371e3; // Earth's radius in meters
-      const phi1 = lat1 * Math.PI / 180;
-      const phi2 = lat2 * Math.PI / 180;
-      const deltaphi = (lat2 - lat1) * Math.PI / 180;
-      const deltalambda = (lon2 - lon1) * Math.PI / 180;
-
-      const a = Math.sin(deltaphi / 2) * Math.sin(deltaphi / 2) +
-              Math.cos(phi1) * Math.cos(phi2) *
-              Math.sin(deltalambda / 2) * Math.sin(deltalambda / 2);
-      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-      const d = R * c; // Distance on json objectthe surface
-      const altDiff = alt2 - alt1; // Altitude difference
-
-      const distance3D = Math.sqrt(d * d + altDiff * altDiff);
-      return distance3D;
-    }
-
+    
     const forma = parseFloat((location.search.split('forma=')[1]||'').split('&')[0].replace(",","."));
     const escala = parseFloat((location.search.split('escala=')[1]||'').split('&')[0].replace(",","."));
     const tamanho = parseInt((location.search.split('tamanho=')[1]||'').split('&')[0].replace(",","."));
     const numero = parseInt((location.search.split('numero=')[1]||'').split('&')[0].replace(",","."));
     
-    if (isNaN(latitude) || isNaN(longitude) || isNaN(altitude) ||
-        latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
-        document.getElementById('resultados').innerText = JSON.stringify({
-              "error": 'Please enter valid latitude, longitude and altitude values.'});
-    } else {
-        fetchAircraftData(latitude, longitude, altitude);
-    }
+    invoke(tamanho, forma, escala, numero);
 
     
   </script>
