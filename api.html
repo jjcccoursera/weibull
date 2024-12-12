@@ -50,6 +50,7 @@
       } 
       if (numero === "NaN" || numero <= 0) { 
         const result = weibull(forma, escala, tamanho); 
+        console.log(result);
         return JSON.stringify(resultados(result)); 
       } 
       
