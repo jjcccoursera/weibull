@@ -82,7 +82,7 @@
             tbody.innerHTML = ""; // Clear any existing rows
         };
 
-        function gerarAmostraEmPython() {
+        function gerarAmostra() {
             document.getElementById('titulo').style.display = "block";
             const tbody = document.getElementById('amostra');
             tbody.innerHTML = ""; // Clear any existing rows
@@ -104,7 +104,7 @@
             console.log(" Amostra:", amostra);  // Debug log
 
             // Populate the table with the result
-            const tbody = document.getElementById('amostra');
+            tbody = document.getElementById('amostra');
             tbody.innerHTML = ""; // Clear any existing rows
             var row = document.createElement('tr');
             var cell = document.createElement('td');
@@ -150,7 +150,9 @@
                 values.push(w); 
             } 
             return values; 
-        } 
+        }
+
+        gerarAmostra();
 
         /* function resultados(result) { 
             const sum = result.reduce((a, b) => a + b, 0); 
