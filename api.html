@@ -48,7 +48,7 @@
         alert("Corrija valores não positivos ou parâmetros em falta"); 
         return; 
       } 
-      if (numero === undefined || numero <= 0) { 
+      if (numero === "NaN" || numero <= 0) { 
         const result = weibull(forma, escala, tamanho); 
         return JSON.stringify(resultados(result)); 
       } 
