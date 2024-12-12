@@ -149,11 +149,11 @@
                 let w = scale * Math.pow(-Math.log(1 - u), 1 / shape); 
                 values.push(w); 
             } 
-            return values; 
+            return resultados(values); 
         }
 
         
-        /* function resultados(result) { 
+        function resultados(result) { 
             const sum = result.reduce((a, b) => a + b, 0); 
             const média = sum / result.length; 
             const variance = result.reduce((a, b) => a + Math.pow(b - média, 2), 0) / result.length; 
@@ -161,7 +161,7 @@
             const json_object = { "média": média, "dp": dp, "lista": result };
             console.log(json_object); 
             return JSON.stringify(json_object); 
-         */
+         
   </script>
 </body>
 </html>
