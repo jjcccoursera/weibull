@@ -109,7 +109,7 @@
             var row = document.createElement('tr');
             var cell = document.createElement('td');
             cell.style = "color: green";
-            cell.innerText = "Média: " + amostra.média.toFixed(3);
+            cell.innerText = "Média: " + amostra.media.toFixed(3);
             tbody.appendChild(row);
             row.appendChild(cell);
             row = document.createElement('tr');
@@ -158,7 +158,7 @@
             const média = sum / result.length; 
             const variance = result.reduce((a, b) => a + Math.pow(b - média, 2), 0) / result.length; 
             const dp = Math.sqrt(variance); 
-            const json_object = { "média": média, "dp": dp, "lista": result };
+            const json_object = { "media": média, "dp": dp, "lista": result };
             console.log(json_object); 
             return JSON.stringify(json_object); 
         }
