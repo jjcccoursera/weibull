@@ -23,8 +23,14 @@ An API is available. Examples:
 --------------------------------------------------------------------
 
 
-http://weibull-443411.ew.r.appspot.com/
+[http://weibull-443411.ew.r.appspot.com/
+
+https://weibull-a4grd4b3gkghh2dy.westeurope-01.azurewebsites.net/](http://weibull-443411.ew.r.appspot.com/
+
+https://weibulljs-dot-weibull-443411.ew.r.appspot.com/
 
 https://weibull-a4grd4b3gkghh2dy.westeurope-01.azurewebsites.net/
+
+https://lemon-field-05867071e.4.azurestaticapps.net/
 
   
